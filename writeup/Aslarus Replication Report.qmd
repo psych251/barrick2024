@@ -1,0 +1,99 @@
+---
+title: "Replication of Individual Differences in Emotion Prediction and Implications for Social Success by Barrick et al. (2024, Emotion)"
+author: "Izzy Aslarus (aslarus@stanford.edu)"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+format:
+  html:
+    toc: true
+    toc_depth: 3
+---
+
+## Introduction
+
+I chose to replicate *Individual Differences in Emotion Prediction and Implications for Social Success* by Barrick et al. (2024, Emotion) because I am interested in the relationship between social cognition (what we know about those around us) and interpersonal emotion regulation (how we help those around us to improve their emotional states). In this study, Barrick et al. focus on subjects' ability to accurately predict how other people transition between different emotions over time. Emotion prediction accuracy is an interesting measure of social cognition that has theoretical links to interpersonal emotion regulation. For instance, someone who is better able to predict how another person's emotions change over time might be better able to simulate the emotional consequences of different interpersonal emotion regulation strategies (e.g., distraction, humor, reappraisal, venting), then intervene with the most effective strategy. Barrick et al. found that emotion prediction accuracy is linked to a constellation of other socioemotional outcomes, such as larger social networks and better  emotion perception from facial expressions. This constellation of outcomes is likewise theoretically relevant for interpersonal emotion regulation (e.g., having a larger social network may be related to being more effective at improving others' emotions when desired).
+
+The main task in Barrick et al. (2024) was the Emotion Transitions Task. In this task, subjects rated the likelihood of a generic other person transitioning between every possible pair of emotions from the following list: irritable, anxious, calm, happy, sad, full of thought, sluggish. The study's key measure of interest, **emotion prediction accuracy**, was operationalized as the correlation between subjects' ratings of a generic other person and a set of average transition probabilities obtained from a preexisting experience sampling dataset. Subjects then completed several other tasks and questionnaires to measure potential correlates of emotion prediction accuracy. First, subjects rated the likelihood that they themselves would transition between every pair of emotions, enabling subjects' **emotion typicality** to be operationalized as the correlation between their ratings of their own emotion transitions and the average transition probabilities. To measure **emotion perception**, subjects completed the multiracial version of the Reading the Mind in the Eyes task. Finally, subjects completed a series of questionnaires: the Toronto Alexithymia Scale, which measures **emotion understanding** (i.e., understanding of one's own internal states); the Communication/Mind-Reading and Social Skills subscales of the Autism Quotient, which measure **autistic traits** related to social difficulties; the UCLA loneliness scale, which measures feelings of **loneliness**; the Multidimensional Scale of Perceived Social Support, which measures feelings of **social support**; and social network nominations, which measure **social network size**. Barrick et al. (2024) found that emotion prediction accuracy was significantly associated with lower loneliness, larger social networks, more typical emotion transitions, better emotion perception, better emotion understanding, and fewer communication difficulties. Counter to the authors' predictions, emotion prediction accuracy was associated with *poorer* social skills, and it was not significantly associated with perceived social support.
+
+There are two main challenges for this replication. Firstly, analyses of the original dataset should be reproduced using code and data available on OSF prior to conducting the replication. This is particularly important because a key element of the analysis involves data from an experience sampling study published prior to Barrick et al.'s 2024 paper, which provides the "ground truth" emotion transitions from which accuracy and typicality are calculated. Therefore, computational reproducibility is needed to validate the operationalization of these two key measures. Secondly, it is possible that there are too many tasks and questionnaires for available resources to support while maintaining sufficient power, which would necessitate narrowing the scope of the replication (e.g., focusing only on social outcomes). The scope of the replication has already been narrowed relative to the original paper, which also examined emotion prediction accuracy at the level of a specific community (e.g., a college campus) and a specific other person (e.g., a close friend). This replication focuses on outcomes related to generic emotion prediction accuracy because of the difficulty of collecting data from subjects in the same community, or from dyads, which would be necessary in order to establish a "ground truth" for specific emotion prediction accuracy.
+
+The repository for this replication can be found here: <https://github.com/psych251/barrick2024/>
+
+Furthermore, the original paper can be found here: <https://github.com/psych251/barrick2024/blob/main/original_paper/barrick2024.pdf>
+
+## Methods
+
+### Power Analysis
+
+Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size.  Considerations of feasibility for selecting planned sample size.
+
+### Planned Sample
+
+Planned sample size and/or termination rule, sampling frame, known demographics if any, preselection rules if any.
+
+### Materials
+
+All materials - can quote directly from original article - just put the text in quotations and note that this was followed precisely.  Or, quote directly and just point out exceptions to what was described in the original article.
+
+### Procedure	
+
+Can quote directly from original article - just put the text in quotations and note that this was followed precisely.  Or, quote directly and just point out exceptions to what was described in the original article.
+
+### Analysis Plan
+
+Can also quote directly, though it is less often spelled out effectively for an analysis strategy section.  The key is to report an analysis strategy that is as close to the original - data cleaning rules, data exclusion rules, covariates, etc. - as possible.  
+
+**Clarify key analysis of interest here**  You can also pre-specify additional analyses you plan to do.
+
+### Differences from Original Study
+
+Explicitly describe known differences in sample, setting, procedure, and analysis plan from original study.  The goal, of course, is to minimize those differences, but differences will inevitably occur.  Also, note whether such differences are anticipated to make a difference based on claims in the original article or subsequent published research on the conditions for obtaining the effect.
+
+### Methods Addendum (Post Data Collection)
+
+You can comment this section out prior to final report with data collection.
+
+#### Actual Sample
+  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+
+#### Differences from pre-data collection methods plan
+  Any differences from what was described as the original plan, or “none”.
+
+
+## Results
+
+
+### Data preparation
+
+Data preparation following the analysis plan.
+	
+```{r include=F}
+### Data Preparation
+
+#### Load Relevant Libraries and Functions
+
+#### Import data
+
+#### Data exclusion / filtering
+
+#### Prepare data for analysis - create columns etc.
+```
+
+### Confirmatory analysis
+
+The analyses as specified in the analysis plan.  
+
+*Side-by-side graph with original graph is ideal here*
+
+### Exploratory analyses
+
+Any follow-up analyses desired (not required).  
+
+## Discussion
+
+### Summary of Replication Attempt
+
+Open the discussion section with a paragraph summarizing the primary result from the confirmatory analysis and the assessment of whether it replicated, partially replicated, or failed to replicate the original result.  
+
+### Commentary
+
+Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
