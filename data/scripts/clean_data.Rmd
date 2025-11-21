@@ -1,0 +1,216 @@
+---
+title: "Data cleaning for replication of Barrick et al., 2024"
+output: html_document
+date: "2025-10-30"
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+
+library(here)
+library(dplyr)
+library(tidyverse)
+
+```
+
+# Data
+
+## Identifiable Qualtrics data
+
+Do not run, or comment out, if loading anonymized Qualtrics data
+
+### Load data
+
+```{r}
+
+# raw_identifiable <-
+#   here(
+#     "data", "raw", "identifiable",
+#     "Psych 251 Replication_October 30, 2025_12.44.csv"
+#   ) %>%
+#   read_csv()
+
+```
+
+### Anonymize and re-save
+
+```{r}
+
+# raw <- raw_identifiable %>%
+#   # Get rid of Qualtrics junk
+#   slice(-1,-2) %>% 
+#   select(
+#     -any_of(
+#       c("RecipientLastName", "RecipientFirstName", "RecipientEmail",
+#         "ExternalDataReference", "ExternalReference", "IPAddress",
+#         "LocationLatitude", "LocationLongitude", "ResponseId", "PROLIFIC_PID")
+#     )
+#   ) %>%
+#   rownames_to_column("sub_id")
+# 
+# raw %>% write_csv(
+#   here(
+#     "data", "raw", "anonymous",
+#     "raw_anon.csv"
+#   )
+# )
+
+```
+
+## Anonymized Qualtrics data
+
+```{r}
+
+raw <-
+  here(
+    "data", "raw", "anonymous",
+    "raw_anon.csv"
+  ) %>%
+  read_csv()
+
+```
+
+
+# Emotion transitions
+
+```{r}
+
+emo_transitions <- raw %>%
+  # Select only emotion transition trials
+  select(
+    sub_id, 
+    contains(
+      c("irritable", "anxious", "calm", "happy", "sad", "fot", "sluggish")
+    )
+  ) %>%
+  # Get rid of "_1" at end of variable names
+  rename_with(
+    ~ sub("_1$", "", .x)
+  ) %>%
+  # Long format
+  pivot_longer(
+    cols = !sub_id,
+    names_to = c("from", "to"),
+    values_to = "probability",
+    names_sep = "_"
+  ) %>%
+  mutate(
+    from = ifelse(
+      from == "fot", "full of thought", from
+    ),
+    to = ifelse(
+      to == "fot", "full of thought", to
+    )
+  )
+
+```
+
+
+# Questionnaires and demographics
+
+```{r}
+
+ques_demo <- raw %>%
+  # Select only questionnaires and demographics
+  select(
+    sub_id, age, gender, race,
+    contains(
+      c("mspss", "tas", "lonely")
+    )
+  ) %>%
+  # Transform questionnaire responses to numeric
+  mutate(
+    across(
+      contains(c("mspss", "tas", "lonely")),
+      ~ as.numeric(.x)
+    )
+  ) %>%
+  # Change values for reverse-scored UCLA loneliness items
+  mutate(
+    across(
+      c("lonely_1R", "lonely_5R", "lonely_6R", "lonely_9R",
+        "lonely_10R", "lonely_15R", "lonely_16R", "lonely_19R", "lonely_20R"),
+      ~ 5 - .x
+    )
+  ) %>%
+  # Change values for reverse-scored TAS alexithymia items
+  mutate(
+    across(
+      c("tas_describefeel_9R", "tas_exorthink_13R", "tas_exorthink_15R",
+        "tas_exorthink_18R", "tas_exorthink_19R"),
+      ~ 6 - .x
+    )
+  ) %>%
+  # Calculate MSPSS social support total and subscale scores
+  mutate(
+    mspss_total = rowSums(across(contains("mspss")))/12,
+    mspss_so = rowSums(across(contains("mspss_so")))/4,
+    mspss_frd = rowSums(across(contains("mspss_frd")))/4,
+    mspss_fam = rowSums(across(contains("mspss_fam")))/4
+  ) %>%
+  # Calculate TAS alexithymia total and subscale scores
+  mutate(
+    tas_total = rowSums(across(contains("tas")))/20,
+    tas_idfeel = rowSums(across(contains("tas_idfeel")))/7,
+    tas_describefeel = rowSums(across(contains("tas_describefeel")))/5,
+    tas_exorthink = rowSums(across(contains("tas_exorthink")))/8
+  ) %>%
+  # Calculate UCLA loneliness total
+  mutate(
+    lonely_total = rowSums(across(contains("lonely")))/20
+  ) %>%
+  select(
+    sub_id, age, gender, race,
+    mspss_total, mspss_so, mspss_frd, mspss_fam,
+    tas_total, tas_idfeel, tas_describefeel, tas_exorthink,
+    lonely_total
+  )
+
+```
+
+# Save clean data
+
+```{r}
+
+emo_transitions %>%
+  write_csv(here("data", "clean", "emo_transitions.csv"))
+
+ques_demo %>%
+  write_csv(here("data", "clean", "ques_demo.csv"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

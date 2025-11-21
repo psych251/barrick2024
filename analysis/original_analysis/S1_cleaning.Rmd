@@ -1,0 +1,192 @@
+---
+title: "Emotion Transitions: Individual Differences Study 1 and Study S1"
+output: html_notebook
+---
+
+Study 1 participants completed: emotion transitions for others and self, loneliness, RMET, MSPSS, SNI, SAS
+Study 1a the same participants completed AQ social and communication subscales, TA-20, emotion similarity
+
+```{r}
+library(psych)
+```
+
+# Reading in the data
+
+```{r}
+# Data from Study 1 (wave 2)
+s1 <- read.csv('/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Study1_SocialSuccess/Data/emot_SS_190415.csv', stringsAsFactors = FALSE, na.strings = "",header = TRUE)[-1:-2,19:220]
+s1[,2:201] <- lapply(s1[,2:201], as.numeric)
+
+# Data from Study S1 (wave 1)
+s1a <-read.csv('/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Study1a_ASD2/Data/emot_ASD2_210202.csv',stringsAsFactors = FALSE, na.strings = "",header = TRUE)[-1:-2, c(19, 118:138, 146:193)]
+s1a[,2:63] <- lapply(s1a[,2:63], as.numeric)
+
+gt <- read.csv('/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/gt.csv')
+```
+
+
+```{r}
+# merging S1 and S1a to include only participants that completed all measures
+full <- merge(s1, s1a, by="MturkID", all.x=TRUE)
+```
+
+
+```{r}
+#remove all participants that responded to less than 100 questions
+full = full[rowSums(is.na(full)) < 100, ]
+```
+
+# Emotion Prediction: Other (Accuracy)
+
+```{r}
+acc <- full[,51:99]
+accT <- as.data.frame(t(acc))
+acc_corr <- corr.test(accT, gt$Rating)
+accuracy <- unlist(acc_corr[1])
+```
+
+# Emotion Transitions: Self (Typicality)
+
+```{r}
+typ <- full[,2:50]
+typT <- as.data.frame(t(typ))
+typ_corr <- corr.test(typT, gt$Rating)
+typicality <- unlist(typ_corr[1])
+```
+
+# Emotion granularity ("size" of state space)
+
+```{r}
+gran <- full[, 203:223]
+```
+
+```{r}
+#recode scores so that higher numbers indicate larger state space/more granular representations
+gran = 7 - gran
+```
+
+```{r}
+gran$size <- rowMeans(gran,na.rm = TRUE)
+```
+
+# "Shape" of state space
+
+```{r}
+#reading in the file with the dimesions of the 3-D mind model
+dims <- read.csv('/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/pc166.csv')
+```
+
+```{r}
+state = c('tiredness','sadness','irritation','thought','calmness','anxiety','happiness')
+dims <- dims[dims$states %in% state, ] #filtering out the states we didn't use in this task
+dims  <- dims[2:4] # dropping the states column
+dims_dist <- apply(dims,2,dist) # creating a distance matrix
+```
+
+```{r}
+gran2_cols = c('calm_anxious.2', 'happy_anxious.2', 'anxious_irritable.2', 'anxious_sad.2', 'full.of.thought_anxious.2', 'anxious_sluggish.2','happy_calm.2', 'irritable_calm.2', 'calm_sad.2', 'full.of.thought_calm.2', 'calm_sluggish.2','irritable_happy.2', 'sad_happy.2', 'happy_full.of.thought.2', 'sluggish_happy.2','sad_irritable.2', 'irritable_full.of.thought.2', 'sluggish_irritable.2', 'sad_full.of.thought.2', 'sluggish_sad.2','full.of.thought_sluggish.2')
+gran2 <- gran[,gran2_cols]
+gran2T <- t(gran2)
+```
+
+```{r}
+# correlation between the similarity ratings and distances between the states on the 3 dimensions (rationality, 
+# social impact, valence). 1 value for each participant.
+shape_corr <- cor(gran2T, dims_dist)
+
+rationality <- shape_corr[,1]
+socialimp <- shape_corr[,2]
+valence <- shape_corr[,3]
+```
+
+# Loneliness
+
+```{r}
+lone <- full[,100:119]
+```
+
+```{r}
+#reverse scoring items 1,5,6,9,10,15,16,19,20
+cols <- c('lonely1', 'lonely5', 'lonely6', 'lonely9','lonely10','lonely15','lonely16','lonely19','lonely20')
+
+lone[ ,cols] = 5 - lone[ ,cols]
+```
+
+```{r}
+lone$lonely_total <- ifelse(apply(is.na(lone),1,all),NA,rowSums(lone,na.rm=TRUE))
+```
+
+# Percieved Social Support (MSPSS)
+
+```{r}
+mspss <- full[,120:131]
+mspss$mspss_total <- ifelse(apply(is.na(mspss),1,all),NA,rowSums(mspss,na.rm=TRUE))
+```
+
+# Reading the Mind in the Eyes Task (RMET)
+
+```{r}
+rmet <- full[, 135:170]
+rmet$rmet_total <- ifelse(apply(is.na(rmet),1,all),NA,rowSums(rmet,na.rm=TRUE))
+```
+
+# Social Adjustment Scale
+
+```{r}
+sas <- full[,171:202]
+sas$SAS_SL12 <- as.numeric(sas$SAS_SL12)
+sas$sas_total <- ifelse(apply(is.na(sas),1,all),NA,rowSums(sas,na.rm=TRUE))
+sas$sas_work <- ifelse(apply(is.na(sas[,1:13]),1,all),NA,rowSums(sas[,1:13],na.rm=TRUE))
+sas$sas_school <- ifelse(apply(is.na(sas[,14:20]),1,all),NA,rowSums(sas[,14:20],na.rm=TRUE))
+sas$sas_social <-ifelse(apply(is.na(sas[,21:32]),1,all),NA,rowSums(sas[,21:32],na.rm=TRUE)) 
+```
+
+# Social Network Index
+
+```{r}
+sni <- full[, 132:133]
+sni$sni_total <- ifelse(apply(is.na(sni),1,all),NA,rowSums(sni,na.rm=TRUE))
+```
+
+# Alexithymia
+
+```{r}
+ax <- full[,224:242]
+ax$ax_total <- ifelse(apply(is.na(ax),1,all),NA,rowSums(ax,na.rm=TRUE))
+```
+
+
+# Autism Quotient
+
+```{r}
+aq <- full[,244:263]
+
+# Using the redefined categories for social and communication from English et al. (Autism Resarch, 2020)
+aq$new.aqsocial <- aq$AQ_11 + aq$AQ_38 + aq$AQ_17 + aq$AQ_44 + aq$AQ_22 + aq$AQ_47 + aq$AQ_26 + aq$AQ_1 + aq$AQ_13 + aq$AQ_15
+
+aq$new.aqcomm <- aq$AQ_45 + aq$AQ_27 + aq$AQ_31 + aq$AQ_36 + aq$AQ_35 + aq$AQ_39 +aq$AQ_48
+```
+
+
+
+```{r}
+final <- data.frame(accuracy, typicality, gran$size, rationality, socialimp, valence, lone$lonely_total, mspss$mspss_total, rmet$rmet_total, sas$sas_social, sas$sas_school, sas$sas_work, sas$sas_total, sni$sni_total, ax$ax_total, aq$new.aqsocial, aq$new.aqcomm, full$age, full$gender, full$ethnicity, full$race)
+```
+
+## Demographics
+
+```{r}
+describe(full$age)
+```
+```{r}
+# 1 = M, 2 = F, 3 = Other, 4 = Prefer not to answer
+table(full$gender)
+```
+
+
+```{r}
+final_corr <- final
+colnames(final_corr) <- c('Accuracy: general','Typicality', 'Granularity', 'Rationality','Social impact',' Valence', 'Loneliness','Social support', 'Emotion Perception','SAS: social', 'SAS: school','SAS: work','SAS: total','SNI','Emotion understanding','AQ: social','AQ: communication')
+
+#write.csv(final_corr, "../Data/S1_clean.csv", row.names = FALSE)
+```

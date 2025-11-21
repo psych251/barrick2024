@@ -1,0 +1,651 @@
+---
+title: "Emotion Transitions: All studies"
+output: 
+  html_notebook: 
+    toc: yes
+    number_sections: yes
+---
+
+```{r}
+library(psych)
+library(lmerTest)
+library(parameters)
+library(lm.beta)
+```
+
+```{r}
+# reading in the data
+full = read.csv('/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/All_data/full.csv')
+```
+
+```{r}
+full$Study <- as.factor(full$Study)
+```
+
+# Emotion prediction accuracy
+
+## Typicality
+
+### General population
+
+```{r}
+# random intercept & slope
+# singular fit - simplified model below
+#mod.typ <- lmer(Accuracy..general ~ Typicality + (Typicality|Study), data = full)
+#summary(mod.typ)
+#model_parameters(mod.typ, standardize = 'refit')
+```
+
+
+```{r}
+# random intercept
+mod.typ2 <- lmer(Accuracy..general ~ Typicality + (1|Study), data = full)
+summary(mod.typ2)
+model_parameters(mod.typ2, standardize = 'refit')
+```
+
+```{r}
+coef(mod.typ2)
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(full, aes(x = Typicality, y = Accuracy..general, color = Study, fill = Study)) + 
+  scale_colour_manual(values=c("#fc4444", "#fcd444", "#8cc43c", "#5bc0de", "#6454ac")) +
+  scale_fill_manual(values=c("#fc4444", "#fcd444", "#8cc43c", "#5bc0de", "#6454ac")) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm", size = .8, alpha = .2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: general")
+
+ggsave("/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Acc-Typ-allstudies.pdf", height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+### Community
+
+```{r}
+mod.typ3 <- lm(Accuracy..community ~ Typicality + Study, data = full)
+summary(mod.typ3)
+lm.beta(mod.typ3)
+```
+
+```{r}
+commStuds = full[full$Study %in% c("4", "5"), ]
+ggplot(commStuds, aes(x = Typicality, y = Accuracy..community, color = Study, fill=Study)) + 
+  scale_colour_manual(values=c("#5bc0de", "#6454ac")) +
+  scale_fill_manual(values=c("#5bc0de", "#6454ac")) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm", size = .8, alpha = 0.2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: community")
+
+ggsave('/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Community-Typ.pdf',height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+### Specific friend
+
+```{r}
+mod.typ4 <- lm(Accuracy..friend ~ Typicality, data = full)
+summary(mod.typ4)
+lm.beta(mod.typ4)
+```
+
+```{r}
+frStud = full[full$Study == 5, ]
+ggplot(frStud, aes(x = Typicality, y = Accuracy..friend, color = Study, fill = Study)) + 
+  scale_colour_manual(values=c("#6454ac")) +
+  scale_fill_manual(values=c("#6454ac")) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm",  size = .8, alpha = 0.2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: friend")
+
+ggsave('/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Friend-Typ.pdf',height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+## Emotion understanding
+
+### General
+
+```{r}
+# model does not converge - simplifying below
+#mod.eu <- lmer(Accuracy..general ~ Emotion.understanding + (1+Emotion.understanding|Study), data = full)
+#summary(mod.eu)
+#model_parameters(mod.eu, standardize = 'refit')
+```
+
+
+```{r}
+mod.eu2 <- lmer(Accuracy..general ~ Emotion.understanding + (1|Study), data = full)
+summary(mod.eu2)
+model_parameters(mod.eu2, standardize = 'refit')
+```
+
+```{r}
+coef(mod.eu2)
+```
+
+
+```{r}
+ggplot(full, aes(x = Emotion.understanding, y = Accuracy..general, color = Study, fill = Study)) + 
+  scale_colour_manual(values=c("#fc4444", "#fcd444", "#8cc43c", "#5bc0de", "#6454ac")) +
+  scale_fill_manual(values=c("#fc4444", "#fcd444", "#8cc43c", "#5bc0de", "#6454ac")) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm", size = .8, alpha = .2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: general")
+
+ggsave("/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Acc-emoUnderstand-allstudies.pdf", height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+
+### Community
+
+```{r}
+# singular fit - simplified below
+#mod.eu3 <- lmer(Accuracy..community ~ Emotion.understanding + (1|Study), data = full)
+#summary(mod.eu3)
+#model_parameters(mod.eu3, standardize = 'refit')
+```
+
+```{r}
+mod.eu4 <- lm(Accuracy..community ~ Emotion.understanding + Study, data = full)
+summary(mod.eu4)
+lm.beta(mod.eu4)
+```
+
+```{r}
+ggplot(commStuds, aes(x = Emotion.understanding, y = Accuracy..community, color = Study, fill=Study)) + 
+  scale_colour_manual(values=c("#5bc0de", "#6454ac")) +
+  scale_fill_manual(values=c("#5bc0de", "#6454ac")) +
+  geom_point(alpha = .5) + 
+  geom_smooth(method = 'lm', size = .8, alpha = 0.2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: community") + 
+  xlab("Emotion understanding impairment")
+
+ggsave("/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Community-emoUnderstand.pdf",height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+### Specific friend
+
+```{r}
+mod.eu5 <- lm(Accuracy..friend ~ Emotion.understanding, data = full)
+summary(mod.eu5)
+lm.beta(mod.eu5)
+```
+
+```{r}
+ggplot(frStud, aes(x = Emotion.understanding, y = Accuracy..friend, color = Study, fill=Study)) + 
+  scale_colour_manual(values=c("#6454ac")) +
+  scale_fill_manual(values=c('#6454ac')) +
+  geom_point(alpha = .5) + 
+  geom_smooth(method = 'lm', size = 0.8, alpha = 0.2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: friend") + 
+  xlab("Emotion understanding impairment")
+
+ggsave("/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Friend-emoUnderstand.pdf",height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+## Emotion Perception
+
+### General
+
+```{r}
+# model does not converge  - simplifying below
+#mod.ep <- lmer(Accuracy..general ~ Emotion.perception + (1+Emotion.perception|Study), data = full)
+#summary(mod.ep)
+#model_parameters(mod.ep, standardize = 'refit')
+```
+
+```{r}
+emopStuds = full[full$Study %in% c("1","2","4", "5"), ]
+mod.ep2 <- lmer(Accuracy..general ~ Emotion.perception + (1|Study), data = emopStuds)
+summary(mod.ep2)
+model_parameters(mod.ep2, standardize = 'refit')
+```
+
+```{r}
+coef(mod.ep2)
+```
+
+
+```{r}
+emopStuds = full[full$Study %in% c("1","2","4", "5"), ]
+ggplot(emopStuds, aes(x = Emotion.perception, y = Accuracy..general, color = Study, fill = Study)) + 
+  scale_colour_manual(values=c("#fc4444", "#fcd444", "#5bc0de", "#6454ac")) +
+  scale_fill_manual(values=c("#fc4444", "#fcd444", "#5bc0de", "#6454ac")) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm", size = .8, alpha = .2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: general")
+
+ggsave("/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Acc-emoPercept-allstudies.pdf",height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+### Community
+
+```{r}
+mod.ep3 <- lm(Accuracy..community ~ Emotion.perception + Study, data = full)
+summary(mod.ep3)
+lm.beta(mod.ep3)
+```
+
+
+```{r}
+ggplot(commStuds, aes(x = Emotion.perception, y = Accuracy..community, color = Study, fill=Study)) + 
+  scale_colour_manual(values=c("#5bc0de", "#6454ac")) +
+  scale_fill_manual(values=c("#5bc0de", "#6454ac")) +
+  geom_point(alpha = .5) + 
+  geom_smooth(method = "lm", size = 0.8, alpha = 0.2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: community") + 
+  xlab("Emotion perception")
+
+ggsave("/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Community-emoPercept.pdf",height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+### Specific friend
+
+```{r}
+mod.ep4 <- lm(Accuracy..friend ~ Emotion.perception, data = full)
+summary(mod.ep4)
+lm.beta(mod.ep4)
+```
+
+```{r}
+ggplot(frStud, aes(x = Emotion.perception, y = Accuracy..community, color = Study, fill = Study)) + 
+  scale_colour_manual(values=c("#6454ac")) +
+  scale_fill_manual(values=c("#6454ac")) +
+  geom_point(alpha = .5) + 
+  geom_smooth(method = "lm", size = 0.8, alpha = 0.2) +
+  theme_classic() +
+  ylab("Emotion prediction accuracy: friend") + 
+  xlab("Emotion perception")
+
+ggsave("/Users/ebarrick/Dropbox (Princeton)/Emotion_Transitions_Clinical/Manuscript/Analyses-Results/Figures/Friend-emoPercept.pdf",height = 1.75, width = 2.5, units = ("cm"), scale = 4.5)
+```
+
+
+## Communication impairments
+
+### General
+
+```{r}
+# model does not converge  - simplifying below
+#mod.comm <- lmer(Accuracy..general ~ AQ..communication + (1+AQ..communication|Study), data = full)
+#summary(mod.comm)
+#model_parameters(mod.comm, standardize = 'refit')
+```
+
+```{r}
+mod.comm2 <- lmer(Accuracy..general ~ AQ..communication + (1|Study), data = full)
+summary(mod.comm2)
+model_parameters(mod.comm2, standardize = 'refit')
+```
+
+### Community
+
+```{r}
+mod.comm3 <- lm(Accuracy..community ~ AQ..communication + Study, data = full)
+summary(mod.comm3)
+lm.beta(mod.comm3)
+```
+
+### Specific friend
+
+```{r}
+mod.comm4 <- lm(Accuracy..friend ~ AQ..communication, data = full)
+summary(mod.comm4)
+lm.beta(mod.comm4)
+```
+
+## Sociality impairments
+
+### General
+
+```{r}
+mod.soc1 <- lmer(Accuracy..general ~ AQ..social + (1|Study), data = full)
+summary(mod.soc1)
+model_parameters(mod.soc1, standardize = 'refit')
+```
+
+```{r}
+plot(full$Accuracy..general ~ full$AQ..social)
+abline(lm(full$Accuracy..general ~ full$AQ..social))
+```
+
+
+### Community
+
+```{r}
+mod.soc2 <- lm(Accuracy..community ~ AQ..social + Study, data = full)
+summary(mod.soc2)
+lm.beta(mod.soc2)
+```
+
+### Specific friend
+
+```{r}
+mod.soc3 <- lm(Accuracy..friend ~ AQ..social, data = full)
+summary(mod.soc3)
+lm.beta(mod.soc3)
+```
+
+
+# Communication & information sources
+
+## Typicality
+
+```{r}
+comm.typ <- lmer(Typicality ~ AQ..communication + (1|Study), data = full)
+summary(comm.typ)
+model_parameters(comm.typ, standardize = 'refit')
+```
+
+
+## Emotion understanding
+
+```{r}
+comm.eu <- lmer(Emotion.understanding ~ AQ..communication + (1|Study), data = full)
+summary(comm.eu)
+model_parameters(comm.eu, standardize = 'refit')
+```
+
+
+## Emotion perception
+
+```{r}
+comm.ep <- lmer(Emotion.perception ~ AQ..communication + (1|Study), data = full)
+summary(comm.ep)
+model_parameters(comm.ep, standardize = 'refit')
+```
+
+# Social functioning
+
+## loneliness
+
+### General
+
+```{r}
+acc.lone <- lmer(Loneliness ~ Accuracy..general + (1|Study), data = full)
+summary(acc.lone)
+model_parameters(acc.lone, standardize = 'refit')
+```
+
+### Community 
+
+```{r}
+acc.lone2 <- lm(Loneliness ~ Accuracy..community + Study, data = full)
+summary(acc.lone2)
+lm.beta(acc.lone2)
+```
+
+### Friend
+
+```{r}
+acc.lone3 <- lm(Loneliness ~ Accuracy..friend, data = full)
+summary(acc.lone3)
+lm.beta(acc.lone3)
+```
+
+
+## social network size
+
+### General acc
+
+```{r}
+acc.snng <- lmer(SNN..general ~ Accuracy..general + (1|Study), data = full)
+summary(acc.snng)
+model_parameters(acc.snng, standardize = 'refit')
+```
+
+```{r}
+acc.snnc <- lmer(SNN..close ~ Accuracy..general + (1|Study), data = full)
+summary(acc.snnc)
+model_parameters(acc.snnc, standardize = 'refit')
+```
+
+### Community
+
+
+```{r}
+acc.snng2 <- lm(SNN..general ~ Accuracy..community + Study, data = full)
+summary(acc.snng2)
+lm.beta(acc.snng2)
+```
+
+
+```{r}
+acc.snnc2 <- lm(SNN..close ~ Accuracy..community + Study, data = full)
+summary(acc.snnc2)
+lm.beta(acc.snnc2)
+```
+
+### Friend
+
+```{r}
+acc.snng3 <- lm(SNN..general ~ Accuracy..friend, data = full)
+summary(acc.snng3)
+lm.beta(acc.snng3)
+```
+
+```{r}
+acc.snnc3 <- lm(SNN..close ~ Accuracy..friend, data = full)
+summary(acc.snnc3)
+lm.beta(acc.snnc3)
+```
+
+## Perceived social support
+
+Only studies 1,2,4,5
+
+### General
+
+```{r}
+acc.pss <- lmer(Social.support ~ Accuracy..general + (1|Study), data = full)
+summary(acc.pss)
+model_parameters(acc.pss, standardize = 'refit')
+```
+
+### Community
+
+
+```{r}
+acc.pss2 <- lm(Social.support ~ Accuracy..community + Study, data = full)
+summary(acc.pss2)
+lm.beta(acc.pss2)
+```
+
+### Friend
+
+
+```{r}
+acc.pss3 <- lm(Social.support ~ Accuracy..friend, data = full)
+summary(acc.pss3)
+lm.beta(acc.pss3)
+```
+
+# Social functioning and ASD
+
+```{r}
+aq.lone <- lmer(Loneliness ~ AQ..communication + (1|Study), data = full)
+summary(aq.lone)
+model_parameters(aq.lone, standardize = 'refit')
+```
+
+```{r}
+aq.gennet <- lmer(SNN..general ~ AQ..communication + (1|Study), data = full)
+summary(aq.gennet)
+model_parameters(aq.gennet, standardize = 'refit')
+```
+
+```{r}
+aq.closenet <- lm(SNN..close ~ AQ..communication + Study, data = full)
+summary(aq.closenet)
+lm.beta(aq.closenet)
+```
+
+# Mediations
+
+```{r}
+corr.test(full$Typicality, full$Emotion.understanding)
+corr.test(full$Typicality, full$Emotion.understanding)$p
+```
+
+```{r}
+corr.test(full$Typicality, full$Emotion.perception)
+```
+
+```{r}
+corr.test(full$Emotion.perception, full$Emotion.understanding)
+```
+
+
+```{r}
+detach(package:lmerTest, unload=TRUE)#unloading lmerTest so that mediation package will work
+library(mediation)
+library(lme4)
+```
+
+## Accuracy & Information Sources
+
+### Typicality
+
+```{r}
+fitM <- lmer(Typicality ~ AQ..communication + (1|Study), data = full)
+fitY <- lmer(Accuracy..general ~ AQ..communication + Typicality + (1|Study), data=full)
+```
+
+```{r}
+model_parameters(fitM)
+```
+
+```{r}
+model_parameters(fitY)
+```
+
+
+```{r}
+fitMedBoot <- mediate(fitM, fitY, treat="AQ..communication", mediator="Typicality", sims = 5000)
+summary(fitMedBoot)
+```
+```{r}
+pdf(file = "Figures/Med_typ.pdf",width = 5, height = 4)
+
+plot(fitMedBoot,  xlim=c(-0.020, 0.01))
+
+dev.off()
+```
+
+```{r}
+rstudioapi::getSourceEditorContext()$path
+```
+
+
+```{r}
+#indirect
+print(fitMedBoot$d0)
+print(fitMedBoot$d0.ci)
+#direct
+print(fitMedBoot$z0)
+print(fitMedBoot$z0.ci)
+#total
+print(fitMedBoot$tau.coef)
+print(fitMedBoot$tau.ci)
+```
+
+
+### Emotion understanding
+
+```{r}
+fitM2 <- lmer(Emotion.understanding ~ AQ..communication + (1|Study), data = full)
+fitY2 <- lmer(Accuracy..general ~ AQ..communication + Emotion.understanding + (1|Study), data=full)
+```
+
+```{r}
+model_parameters(fitM2)
+```
+
+
+```{r}
+model_parameters(fitY2)
+```
+
+
+```{r}
+set.seed(47)
+fitMedBoot2 <- mediate(fitM2, fitY2, treat="AQ..communication", mediator="Emotion.understanding", sims = 5000)
+summary(fitMedBoot2)
+```
+```{r}
+pdf(file = "Figures/Med_EU.pdf",width = 5, height = 4)
+plot(fitMedBoot2,xlim=c(-0.020, 0.01))
+dev.off()
+```
+
+
+
+```{r}
+#indirect
+print(fitMedBoot2$d0)
+print(fitMedBoot2$d0.ci)
+#direct
+print(fitMedBoot2$z0)
+print(fitMedBoot2$z0.ci)
+#total
+print(fitMedBoot2$tau.coef)
+print(fitMedBoot2$tau.ci)
+```
+
+
+### Emotion perception
+
+```{r}
+fitM3 <- lmer(Emotion.perception ~ AQ..communication + (1|Study), data = full)
+fitY3 <- lmer(Accuracy..general ~ AQ..communication + Emotion.perception + (1|Study), data=full)
+```
+
+```{r}
+model_parameters(fitM3)
+```
+
+```{r}
+model_parameters(fitY3)
+```
+
+
+```{r}
+set.seed(47)
+fitMedBoot3 <- mediate(fitM3, fitY3, treat="AQ..communication", mediator="Emotion.perception", sims = 5000)
+summary(fitMedBoot3)
+```
+```{r}
+pdf(file = "Figures/Med_EP.pdf",width = 5, height = 4)
+plot(fitMedBoot3, xlim=c(-0.020, 0.01))
+dev.off()
+```
+
+
+
+```{r}
+#indirect
+print(fitMedBoot3$d0)
+print(fitMedBoot3$d0.ci)
+#direct
+print(fitMedBoot3$z0)
+print(fitMedBoot3$z0.ci)
+#total
+print(fitMedBoot3$tau.coef)
+print(fitMedBoot3$tau.ci)
+```

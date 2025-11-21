@@ -1,0 +1,286 @@
+---
+title: "Analyze data for replication of Barrick et al., 2024"
+output: html_document
+date: "2025-10-30"
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+
+library(here)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(lme4)
+library(ggeffects)
+
+theme_set(
+  theme_classic() +
+    theme(plot.title = element_text(hjust = 0.5))
+)
+
+```
+
+# Data
+
+## Clean replication data
+
+```{r}
+
+emo_transitions <-
+  read_csv(here("data", "clean", "emo_transitions.csv"))
+
+ques_demo <-
+  read_csv(here("data", "clean", "ques_demo.csv"))
+
+```
+
+## Ground truth emotion transitions
+
+```{r}
+
+gt_emo_transitions <-
+  read_csv(here("data", "ground_truth", "gt.csv")) %>%
+  rename(
+    from = state1, to = state2, ground_truth = Rating
+  ) %>%
+  mutate(
+    from = ifelse(
+      from == "full-thought", "full of thought", from
+    ),
+    to = ifelse(
+      to == "full-thought", "full of thought", to
+    )
+  )
+  
+```
+
+# Emotion prediction accuracy
+
+```{r}
+
+emo_predict_accuracy <- emo_transitions %>%
+  left_join(
+    gt_emo_transitions,
+    by = c("from" = "from", "to" = "to")
+  ) %>%
+  group_by(sub_id) %>%
+  summarize(
+    accuracy = cor(probability, ground_truth, use = "pairwise.complete.obs"),
+    .groups = "drop"
+  )
+
+```
+
+# Visualize emotion transitions
+
+## Ground truth
+
+```{r}
+
+gt_emo_transitions %>%
+  mutate(
+    from = factor(
+      from,
+      levels = c("irritable", "anxious", "sad", "sluggish",
+                 "full of thought", "calm", "happy")
+    ),
+    to = factor(
+      to,
+      levels = c("irritable", "anxious", "sad", "sluggish",
+                 "full of thought", "calm", "happy")
+    )
+  ) %>%
+  ggplot(
+    aes(x = from, y = to, fill = ground_truth)
+  ) +
+  geom_raster() +
+  scale_fill_distiller(
+    name = "\nTransition\nlikelihood",
+    palette = "Spectral"
+  ) +
+  coord_fixed() +
+  labs(
+    x = "From (State 1)",
+    y = "To (State 2)",
+    title = "Ground truth emotion transitions"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+ggsave(here("figures", "pilot", "gt_plot.png"), width = 3.5, height = 3)
+
+```
+
+## Subjects' data
+
+```{r}
+emo_transitions %>%
+  left_join(
+    emo_predict_accuracy,
+    by = c("sub_id" = "sub_id")
+  ) %>%
+  mutate(
+    facet_label = str_c("Accuracy = ", round(accuracy, 2))
+  ) %>%
+  mutate(
+    from = factor(
+      from,
+      levels = c("irritable", "anxious", "sad", "sluggish",
+                 "full of thought", "calm", "happy")
+    ),
+    to = factor(
+      to,
+      levels = c("irritable", "anxious", "sad", "sluggish",
+                 "full of thought", "calm", "happy")
+    )
+  ) %>%
+  ggplot(
+    aes(x = from, y = to, fill = probability)
+  ) +
+  geom_raster() +
+  scale_fill_distiller(
+    name = "Probability\nrating",
+    palette = "Spectral"
+  ) +
+  coord_fixed() +
+  labs(
+    x = "From (State 1)",
+    y = "To (State 2)",
+    title = "Pilot participants' emotion transition predictions"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  facet_wrap(vars(facet_label), nrow = 1)
+
+ggsave(here("figures", "pilot", "pilot_predictions_plot.png"), width = 6.5, height = 3)
+```
+
+# Analysis
+
+## MSPSS
+
+### Stats
+
+```{r}
+
+mspss_acc_model <- emo_predict_accuracy %>%
+  left_join(ques_demo, by = c("sub_id" = "sub_id")) %>%
+  lm(
+    accuracy ~ mspss_total,
+    data = .
+  )
+
+summary(mspss_acc_model)
+
+```
+
+### Visualize
+
+```{r}
+
+mspss_acc_model %>%
+  predict_response(
+    terms = c("mspss_total [all]")
+  ) %>%
+  plot(show_data = TRUE) +
+  labs(
+    x = "MSPSS score",
+    y = "Emotion prediction\naccuracy",
+    title = "Perceived social support"
+  ) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(here("figures", "pilot", "mspss_acc_plot.png"), width = 3, height = 2.5)
+
+```
+
+## Loneliness
+
+### Stats
+
+```{r}
+
+lonely_acc_model <- emo_predict_accuracy %>%
+  left_join(ques_demo, by = c("sub_id" = "sub_id")) %>%
+  lm(
+    accuracy ~ lonely_total,
+    data = .
+  )
+
+summary(lonely_acc_model)
+
+```
+
+### Visualize
+
+```{r}
+
+lonely_acc_model %>%
+  predict_response(
+    terms = c("lonely_total [all]")
+  ) %>%
+  plot(show_data = TRUE) +
+  labs(
+    x = "UCLA loneliness score",
+    y = "Emotion prediction\naccuracy",
+    title = "Loneliness"
+  ) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(here("figures", "pilot", "lonely_acc_plot.png"), width = 3, height = 2.5)
+
+```
+
+
+## Alexithymia
+
+### Stats
+
+```{r}
+
+tas_acc_model <- emo_predict_accuracy %>%
+  left_join(ques_demo, by = c("sub_id" = "sub_id")) %>%
+  lm(
+    accuracy ~ tas_total,
+    data = .
+  )
+
+summary(tas_acc_model)
+
+```
+
+### Visualize
+
+```{r}
+
+tas_acc_model %>%
+  predict_response(
+    terms = c("tas_total [all]")
+  ) %>%
+  plot(show_data = TRUE) +
+  labs(
+    x = "Toronto Alexithymia score",
+    y = "Emotion prediction\naccuracy",
+    title = "Alexithymia"
+  ) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(here("figures", "pilot", "tas_acc_plot.png"), width = 3, height = 2.5)
+
+```
+
+
+
+
+
+
+
+
+
