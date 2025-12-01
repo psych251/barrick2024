@@ -24,7 +24,9 @@ Furthermore, the original paper can be found here: <https://github.com/psych251/
 
 ### Power Analysis
 
-Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size.  Considerations of feasibility for selecting planned sample size.
+I conducted power analyses for two key statistical tests: loneliness predicted by emotion prediction accuracy (i.e., does emotion prediction accuracy have downstream social consequences?), and emotion prediction accuracy predicted by emotion understanding (alexithymia; i.e., does poor understanding of one's own emotions have downstream consequences for one's ability to understand others' emotions?).
+
+Based on the results of these power analyses, I determined that I will be under-powered for the loneliness analysis. Therefore, I will only test whether emotion prediction accuracy is predicted by emotion understanding (alexithymia).
 
 #### Loneliness ~ Emotion Prediction Accuracy
 
@@ -145,7 +147,7 @@ understand_power_analysis_95$n
 
 ### Planned Sample
 
-My planned sample size will be 100 participants. Given the discrepancy in the power analysis for Emotion Understanding (N=58 for 80% power and N=94 for 95% power) and for Loneliness (N=780 for 80% power and N=1290 for 95% power), I will be treating the first analysis (Emotion Prediction Accuracy ~ Emotion Understanding) as my main confirmatory hypothesis test. I will also measure loneliness, but I will treat the second analysis (Loneliness ~ Emotion Prediction Accuracy) as exploratory, given that the sample will be underpowered to detect the original effect.
+My planned sample size will be 100 participants. Given the discrepancy in the power analysis for Emotion Understanding (N=58 for 80% power and N=94 for 95% power) and for Loneliness (N=780 for 80% power and N=1290 for 95% power), I will be only be conducting the first analysis (Emotion Prediction Accuracy ~ Emotion Understanding) as my main confirmatory hypothesis test.
 
 ### Materials
 
@@ -161,21 +163,15 @@ Used same scale as the original study. Below is the description of this scale fr
 
 "To measure participants’ understanding of their emotions, we administered the Toronto Alexithymia Scale, a 20-item self-report scale that measures difficulty describing feelings, difficulty identifying feelings, and externally oriented thinking (Bagby et al., 1994). Participants answer each item on a 5-point scale anchored at strongly disagree to strongly agree. Responses were summed to obtain a total score; higher scores indicate more difficulty understanding emotions" (Barrick et al., 2024).
 
-#### Loneliness Scale
-
-Used same scale as the original study. Below is the description of this scale from the Methods section of the original study:
-
-"Loneliness was measured using the UCLA Loneliness Scale (Russell, 1996)" (Barrick et al. 2024).
-
 ### Procedure	
 
 #### Participants and exclusions
 
-The original study recruited participants from Amazon's Mechanical Turk, whereas I will recruit participants from Prolific. My replication will be conducted using Qualtrics, which is the same platform used in the original study. I will use the same inclusion criteria as the original study: "Study participation was restricted to workers in the United States with >95% approval ratings," as well as the same exclusion criteria: "Participants... were excluded if they completed less than half of the questions... or indicated an English comprehension less than 'Good'" (Barrick et al. 2024).
+The original study recruited participants from Amazon's Mechanical Turk, whereas I will recruit participants from Prolific. My replication will be conducted using Qualtrics, which is the same platform used in the original study. I will use the same or similar inclusion criteria as the original study. Firstly, I will recruit participants who have a minimum approval rating of 95% on Prolific, matching this inclusion criterion: "Study participation was restricted to workers in the United States with >95% approval ratings." I will also restrict recruitment to participants who report being fluent in English on Prolific, which is conceptually similar to this exclusion criterion: "Participants... were excluded if they... indicated an English comprehension less than 'Good'." Finally, I will not enable participants to skip questions in my Qualtrics survey, which amounts to a stricter version of this exclusion criterion: "Participants... were excluded if they completed less than half of the questions" (Barrick et al. 2024).
 
 #### Tasks and Scales
 
-After providing informed consent, participants will first complete the Emotion Transitions Task. Next, they will complete the Emotion Understanding Scale and the Loneliness Scale, with the order of these two scales randomized across participants. Finally, they will provide demographic information and receive a debrief.
+After providing informed consent, participants will first complete the Emotion Transitions Task. Next, they will complete the Emotion Understanding Scale. Finally, they will provide demographic information and receive a debrief.
 
 ### Analysis Plan
 
@@ -187,7 +183,7 @@ For the Emotion Transitions Task, Emotion Prediction Accuracy will be calculated
 
 The authors provide ground-truth emotion transition probabilities, which they computed using ecological momentary assessment data normalized by the overall frequency of different emotions. Thus, I will be able to compute Emotion Prediction Accuracy by correlating participants' transition likelihood ratings with the same ground truth transitions used by in the original study.
 
-For the UCLA Loneliness Scale and Toronto Alexithymia Scale, scores will be obtained by summing item ratings (with reverse-coding where applicable), as described in the scale instructions.
+For the Toronto Alexithymia Scale, scores will be obtained by summing item ratings (with reverse-coding where applicable), as described in the scale instructions.
 
 #### Emotion understanding: Key confirmatory test
 
@@ -198,16 +194,6 @@ Analyses in the original study were as follows:
 "To test the roles of internal and external information in emotion prediction, we fit separate linear mixed effects models for each source of information (typicality, emotion understanding, emotion perception) using a REML in R, using the lmer() function of the lme4 package. Initial models consisted of participants’ general emotion prediction accuracy scores as the dependent variable, a fixed effect of information source (typicality, emotion understanding, and emotion perception), a random intercept for study to account for study-level variation, and a random slope for each information source. The random slope term was removed to allow the model to converge, so only the random intercept for study was included as a random effect. p-values and standardized coefficients were obtained using the parameters package in R (Lüdecke et al., 2020)" (Barrick et al. 2024).
 
 Because I will not be collecting multiple waves of data, I will not need to run a multilevel model accounting for study-level variation. Instead, I will use the lm() function to conduct a simple linear regression with emotion prediction accuracy as the dependent variable and emotion understanding as the predictor. I will use the same method as the original study to obtain standardized coefficients from this model.
-
-#### Loneliness: Exploratory
-
-I am considering this analysis exploratory, given that my power analysis indicates that the replication will be underpowered to detect the original effect.
-
-Analyses in the original study were as follows:
-
-"We fit separate linear mixed-effects models for each social functioning measure using a restricted maximum likelihood estimation in R (REML; using the lmer() function of the lme4 package; Bates et al., 2015; R Core Team, 2021). Initial models consisted of social functioning score separately as the dependent variable (loneliness, social network size, perceived social support), a fixed effect of participants’ general emotion prediction accuracy scores, and a random intercept for study to account for study-level variation. p values and standardized coefficients were obtained using the parameters package in R (Lüdecke et al., 2020)." (Barrick et al. 2024).
-
-Because I will not be collecting multiple waves of data, I will not need to run a multilevel model accounting for study-level variation. Instead, I will use the lm() function to conduct a simple linear regression with loneliness as the dependent variable and emotion prediction accuracy as the predictor. I will use the same method as the original study to obtain standardized coefficients from this model.
 
 ### Differences from Original Study
 
@@ -251,12 +237,21 @@ library(ggeffects)
 
 # Raw data from qualtrics (with identifiable columns removed)
 
-raw <-
+raw_pilot_a <-
   here(
     "data", "raw", "anonymous",
-    "raw_anon.csv"
+    "raw_anon_pilot_a.csv"
   ) %>%
-  read_csv()
+  read_csv() %>%
+  filter(sub_id %in% 1:4)
+
+raw_pilot_b <-
+  here(
+    "data", "raw", "anonymous",
+    "raw_anon_pilot_b.csv"
+  ) %>%
+  read_csv() %>%
+  filter(sub_id %in% 7:8)
 
 # Ground truth emotion transitions from original study
 
@@ -278,11 +273,13 @@ gt_emo_transitions <-
 
 #### Compute emotion prediction accuracy
 
+##### Pilot A
+
 ```{r include = F}
 
 # Get emotion transition ratings
 
-emo_transitions <- raw %>%
+emo_transitions_pilot_a <- raw_pilot_a %>%
   # Select only emotion transition trials
   select(
     sub_id, 
@@ -312,7 +309,7 @@ emo_transitions <- raw %>%
 
 # Compute accuracy
 
-emo_predict_accuracy <- emo_transitions %>%
+emo_predict_accuracy_pilot_a <- emo_transitions_pilot_a %>%
   left_join(
     gt_emo_transitions,
     by = c("from" = "from", "to" = "to")
@@ -325,30 +322,73 @@ emo_predict_accuracy <- emo_transitions %>%
 
 ```
 
-#### Compute loneliness and emotion understanding
+##### Pilot B
 
 ```{r include = F}
-ques_demo <- raw %>%
+
+# Get emotion transition ratings
+
+emo_transitions_pilot_b <- raw_pilot_b %>%
+  # Select only emotion transition trials
+  select(
+    sub_id, 
+    contains(
+      c("irritable", "anxious", "calm", "happy", "sad", "fot", "sluggish")
+    )
+  ) %>%
+  # Get rid of "_1" at end of variable names
+  rename_with(
+    ~ sub("_1$", "", .x)
+  ) %>%
+  # Long format
+  pivot_longer(
+    cols = !sub_id,
+    names_to = c("from", "to"),
+    values_to = "probability",
+    names_sep = "_"
+  ) %>%
+  mutate(
+    from = ifelse(
+      from == "fot", "full of thought", from
+    ),
+    to = ifelse(
+      to == "fot", "full of thought", to
+    )
+  )
+
+# Compute accuracy
+
+emo_predict_accuracy_pilot_b <- emo_transitions_pilot_b %>%
+  left_join(
+    gt_emo_transitions,
+    by = c("from" = "from", "to" = "to")
+  ) %>%
+  group_by(sub_id) %>%
+  summarize(
+    accuracy = cor(probability, ground_truth, use = "pairwise.complete.obs"),
+    .groups = "drop"
+  )
+
+```
+
+#### Compute emotion understanding
+
+##### Pilot A
+
+```{r include = F}
+ques_demo_pilot_a <- raw_pilot_a %>%
   # Select only questionnaires and demographics
   select(
     sub_id, age, gender, race,
     contains(
-      c("tas", "lonely")
+      c("tas")
     )
   ) %>%
   # Transform questionnaire responses to numeric
   mutate(
     across(
-      contains(c("tas", "lonely")),
+      contains(c("tas")),
       ~ as.numeric(.x)
-    )
-  ) %>%
-  # Change values for reverse-scored UCLA loneliness items
-  mutate(
-    across(
-      c("lonely_1R", "lonely_5R", "lonely_6R", "lonely_9R",
-        "lonely_10R", "lonely_15R", "lonely_16R", "lonely_19R", "lonely_20R"),
-      ~ 5 - .x
     )
   ) %>%
   # Change values for reverse-scored TAS alexithymia items
@@ -366,14 +406,48 @@ ques_demo <- raw %>%
     tas_describefeel = rowSums(across(contains("tas_describefeel"))),
     tas_exorthink = rowSums(across(contains("tas_exorthink")))
   ) %>%
-  # Calculate UCLA loneliness total
+  select(
+    sub_id, age, gender, race,
+    tas_total, tas_idfeel, tas_describefeel, tas_exorthink
+  )
+```
+
+##### Pilot B
+
+```{r include = F}
+ques_demo_pilot_b <- raw_pilot_b %>%
+  # Select only questionnaires and demographics
+  select(
+    sub_id, age, gender, race,
+    contains(
+      c("tas")
+    )
+  ) %>%
+  # Transform questionnaire responses to numeric
   mutate(
-    lonely_total = rowSums(across(contains("lonely")))
+    across(
+      contains(c("tas")),
+      ~ as.numeric(.x)
+    )
+  ) %>%
+  # Change values for reverse-scored TAS alexithymia items
+  mutate(
+    across(
+      c("tas_describefeel_9R", "tas_exorthink_13R", "tas_exorthink_15R",
+        "tas_exorthink_18R", "tas_exorthink_19R"),
+      ~ 6 - .x
+    )
+  ) %>%
+  # Calculate TAS alexithymia total and subscale scores
+  mutate(
+    tas_total = rowSums(across(contains("tas"))),
+    tas_idfeel = rowSums(across(contains("tas_idfeel"))),
+    tas_describefeel = rowSums(across(contains("tas_describefeel"))),
+    tas_exorthink = rowSums(across(contains("tas_exorthink")))
   ) %>%
   select(
     sub_id, age, gender, race,
-    tas_total, tas_idfeel, tas_describefeel, tas_exorthink,
-    lonely_total
+    tas_total, tas_idfeel, tas_describefeel, tas_exorthink
   )
 ```
 
@@ -420,11 +494,13 @@ gt_emo_transitions %>%
 
 ##### Participants
 
+###### Pilot A
+
 ```{r}
 
-emo_transitions %>%
+emo_transitions_pilot_a %>%
   left_join(
-    emo_predict_accuracy,
+    emo_predict_accuracy_pilot_a,
     by = c("sub_id" = "sub_id")
   ) %>%
   mutate(
@@ -461,7 +537,54 @@ emo_transitions %>%
   ) +
   facet_wrap(vars(facet_label))
 
-# ggsave(here("figures", "pilot", "pilot_predictions_plot.png"), width = 6, height = 6)
+# ggsave(here("figures", "pilot", "pilot_a_predictions_plot.png"), width = 6, height = 6)
+
+```
+
+###### Pilot B
+
+```{r}
+
+emo_transitions_pilot_b %>%
+  left_join(
+    emo_predict_accuracy_pilot_b,
+    by = c("sub_id" = "sub_id")
+  ) %>%
+  mutate(
+    facet_label = str_c("Accuracy = ", round(accuracy, 2))
+  ) %>%
+  mutate(
+    from = factor(
+      from,
+      levels = c("irritable", "anxious", "sad", "sluggish",
+                 "full of thought", "calm", "happy")
+    ),
+    to = factor(
+      to,
+      levels = c("irritable", "anxious", "sad", "sluggish",
+                 "full of thought", "calm", "happy")
+    )
+  ) %>%
+  ggplot(
+    aes(x = from, y = to, fill = probability)
+  ) +
+  geom_raster() +
+  scale_fill_distiller(
+    name = "Probability\nrating",
+    palette = "Spectral"
+  ) +
+  coord_fixed() +
+  labs(
+    x = "From (State 1)",
+    y = "To (State 2)",
+    title = "Pilot participants' emotion transition predictions"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  facet_wrap(vars(facet_label))
+
+# ggsave(here("figures", "pilot", "pilot_b_predictions_plot.png"), width = 6, height = 6)
 
 ```
 
@@ -470,10 +593,12 @@ emo_transitions %>%
 
 #### Test
 
+##### Pilot B
+
 ```{r}
 
-tas_acc_model <- emo_predict_accuracy %>%
-  left_join(ques_demo, by = c("sub_id" = "sub_id")) %>%
+tas_acc_model_pilot_a <- emo_predict_accuracy_pilot_a %>%
+  left_join(ques_demo_pilot_a, by = c("sub_id" = "sub_id")) %>%
   lm(
     accuracy ~ tas_total,
     data = .
@@ -481,16 +606,36 @@ tas_acc_model <- emo_predict_accuracy %>%
 
 # Same method for standardizing coefficients as in original analyses
 
-model_parameters(tas_acc_model, standardize = 'refit')
-coef(tas_acc_model)
+model_parameters(tas_acc_model_pilot_a, standardize = 'refit')
+coef(tas_acc_model_pilot_a)
+
+```
+
+##### Pilot B
+
+```{r}
+
+tas_acc_model_pilot_b <- emo_predict_accuracy_pilot_b %>%
+  left_join(ques_demo_pilot_b, by = c("sub_id" = "sub_id")) %>%
+  lm(
+    accuracy ~ tas_total,
+    data = .
+  )
+
+# Same method for standardizing coefficients as in original analyses
+
+model_parameters(tas_acc_model_pilot_b, standardize = 'refit')
+coef(tas_acc_model_pilot_b)
 
 ```
 
 #### Visualize
 
+##### Pilot A
+
 ```{r}
 
-tas_acc_model %>%
+tas_acc_model_pilot_a %>%
   predict_response(
     terms = c("tas_total [all]")
   ) %>%
@@ -503,55 +648,34 @@ tas_acc_model %>%
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
 
-# ggsave(here("figures", "pilot", "tas_acc_plot.png"), width = 4, height = 3)
+# ggsave(here("figures", "pilot", "tas_acc_plot_pilot_a.png"), width = 4, height = 3)
 
 ```
 
-
-*Side-by-side graph with original graph is ideal here*
-
-### Exploratory analyses
-
-#### Loneliness ~ Emotion Prediction Accuracy
-
-##### Test
+##### Pilot B
 
 ```{r}
 
-lonely_acc_model <- emo_predict_accuracy %>%
-  left_join(ques_demo, by = c("sub_id" = "sub_id")) %>%
-  lm(
-    lonely_total ~ accuracy,
-    data = .
-  )
-
-# Same method for standardizing coefficients as in original analyses
-
-model_parameters(lonely_acc_model, standardize = 'refit')
-coef(lonely_acc_model)
-
-```
-
-##### Visualization
-
-```{r}
-
-lonely_acc_model %>%
+tas_acc_model_pilot_b %>%
   predict_response(
-    terms = c("accuracy [all]")
+    terms = c("tas_total [all]")
   ) %>%
   plot(show_data = TRUE) +
   labs(
-    x = "Emotion Prediction Accuracy",
-    y = "UCLA Loneliness Score",
-    title = "Loneliness"
+    x = "Toronto Alexithymia Score",
+    y = "Emotion Prediction Accuracy",
+    title = "Emotion Understanding"
   ) +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
 
-# ggsave(here("figures", "pilot", "lonely_acc_plot.png"), width = 4, height = 3)
+# ggsave(here("figures", "pilot", "tas_acc_plot_pilot_b.png"), width = 4, height = 3)
 
 ```
+
+*Side-by-side graph with original graph is ideal here*
+
+### Exploratory analyses
 
 ## Discussion
 
