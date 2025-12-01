@@ -240,7 +240,7 @@ library(ggeffects)
 raw_pilot_a <-
   here(
     "data", "raw", "anonymous",
-    "raw_anon_pilot_a.csv"
+    "raw_anon_pilot_a_anon.csv"
   ) %>%
   read_csv() %>%
   filter(sub_id %in% 1:4)
@@ -248,7 +248,7 @@ raw_pilot_a <-
 raw_pilot_b <-
   here(
     "data", "raw", "anonymous",
-    "raw_anon_pilot_b.csv"
+    "raw_anon_pilot_b_anon.csv"
   ) %>%
   read_csv() %>%
   filter(sub_id %in% 7:8)
